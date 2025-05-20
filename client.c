@@ -4,31 +4,49 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h> // bzero()
+#include <time.h>
 #include <sys/socket.h>
 #include <unistd.h> // read(), write(), close()
-#define MAX 80
+#define ONEMB 1048576
+#define TOTALSIZEOFPACKETS 2097151
+#define X 5
 #define PORT 8080
 #define SA struct sockaddr
 
 
-void func(int sockfd)
+void func(int sockfd, int isWarmup)
 {
-    char buff[MAX];
-    int n;
-    for (;;) {
-        bzero(buff, sizeof(buff));
-        printf("Enter the string : ");
-        n = 0;
-        while ((buff[n++] = getchar()) != '\n')
-            ;
-        write(sockfd, buff, sizeof(buff));
-        bzero(buff, sizeof(buff));
-        read(sockfd, buff, sizeof(buff));
-        printf("From Server : %s", buff);
-        if ((strncmp(buff, "exit", 4)) == 0) {
-            printf("Client Exit...\n");
-            break;
+
+    double totalTime = 0;
+    char buff[ONEMB];
+    char recvBuff[1000];
+
+    for (int i = 1; i <= ONEMB; i*=2) {
+
+        struct timespec start, end;
+        clock_gettime(CLOCK_MONOTONIC, &start);
+        bzero(buff, i);
+
+        for (int j = 0; j < X; j++) {
+            write(sockfd, buff, sizeof(buff));
         }
+
+        bzero(recvBuff, sizeof(recvBuff));
+        read(sockfd, recvBuff, sizeof(recvBuff));
+
+        // Received the ack
+        clock_gettime(CLOCK_MONOTONIC, &end);
+
+        // The amount of seconds passed:
+        double elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+        double avg = elapsed / X;
+        totalTime += avg;
+        if (!isWarmup) {
+            printf("%d\t%d\tseconds\n", i, avg);
+        }
+
+
+        // The throughput is: totalTime/TOTALSIZEOFPACKETS.
     }
 }
 
@@ -44,7 +62,6 @@ int main()
         exit(0);
     }
     else
-        printf("Socket successfully created..\n");
     bzero(&servaddr, sizeof(servaddr));
 
     // assign IP, PORT
@@ -58,11 +75,10 @@ int main()
         printf("connection with the server failed...\n");
         exit(0);
         }
-    else
-        printf("connected to the server..\n");
 
+    printf("client\t127.0.0.1");
     // function for chat
-    func(sockfd);
+    func(sockfd, 0);
 
     // close the socket
     close(sockfd);
