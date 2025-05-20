@@ -24,14 +24,13 @@ void func(int sockfd, int isWarmup)
     for (int i = 1; i <= ONEMB; i*=2) {
 
         struct timespec start, end;
-        clock_gettime(CLOCK_MONOTONIC, &start);
         bzero(buff, i);
 
+        clock_gettime(CLOCK_MONOTONIC, &start);
         for (int j = 0; j < X; j++) {
             write(sockfd, buff, sizeof(buff));
         }
 
-        bzero(recvBuff, sizeof(recvBuff));
         read(sockfd, recvBuff, sizeof(recvBuff));
 
         // Received the ack
