@@ -18,10 +18,11 @@ void func(int sockfd, int isWarmup)
 {
 
     double totalTime = 0;
-    char buff[ONEMB];
     char recvBuff[1000];
 
     for (int i = 1; i <= ONEMB; i*=2) {
+
+        char *buff = malloc(i);
 
         struct timespec start, end;
         bzero(buff, i);
@@ -43,6 +44,7 @@ void func(int sockfd, int isWarmup)
         if (!isWarmup) {
             printf("%d\t%d\tseconds\n", i, avg);
         }
+        free(buff);
 
 
         // The throughput is: totalTime/TOTALSIZEOFPACKETS.
@@ -75,10 +77,12 @@ int main()
         exit(0);
         }
 
-    printf("client\t127.0.0.1");
+    printf("#>\tclient\t127.0.0.1");
     // function for chat
+    func(sockfd, 1);
     func(sockfd, 0);
 
     // close the socket
     close(sockfd);
+    printf("#>");
 }
