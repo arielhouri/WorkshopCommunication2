@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h> // bzero()
+#include <netinet/tcp.h>
 #include <time.h>
 #include <sys/socket.h>
 #include <unistd.h> // read(), write(), close()
@@ -62,7 +63,10 @@ int main()
         exit(0);
     }
     else
-    bzero(&servaddr, sizeof(servaddr));
+        bzero(&servaddr, sizeof(servaddr));
+
+    int flag = 1;
+    setsockopt(sockfd, IPPROTO_TCP, TCP_NODELAY, (char *)&flag, sizeof(int));
 
     // assign IP, PORT
     servaddr.sin_family = AF_INET;

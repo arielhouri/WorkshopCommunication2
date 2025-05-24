@@ -4,7 +4,8 @@
 #include <stdlib.h> 
 #include <string.h>
 #include <strings.h>
-#include <sys/socket.h> 
+#include <sys/socket.h>
+#include <netinet/tcp.h>
 #include <sys/types.h> 
 #include <unistd.h> // read(), write(), close()
 #define MAX 1048576
@@ -68,7 +69,10 @@ int main()
         printf("server accept failed...\n"); 
         exit(0); 
     }
-  
+
+    int flag = 1;
+    setsockopt(connfd, IPPROTO_TCP, TCP_NODELAY, (char *)&flag, sizeof(int));
+
     // Function for chatting between client and server
     //for warmup
     func(connfd);
