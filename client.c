@@ -9,7 +9,7 @@
 #include <unistd.h> // read(), write(), close()
 #define ONEMB 1048576
 #define TOTALSIZEOFPACKETS 2097151
-#define X 5
+#define X 100
 #define PORT 8080
 #define SA struct sockaddr
 
@@ -18,8 +18,9 @@ void func(int sockfd, int isWarmup)
 {
 
     double totalTime = 0;
-    char recvBuff[1000];
+    char recvBuff[1];
 
+    // For each size of block
     for (int i = 1; i <= ONEMB; i*=2) {
 
         char *buff = malloc(i);
@@ -28,26 +29,24 @@ void func(int sockfd, int isWarmup)
         bzero(buff, i);
 
         clock_gettime(CLOCK_MONOTONIC, &start);
-        for (int j = 0; j < X; j++) {
-            write(sockfd, buff, sizeof(buff));
+        for (int k = 0; k < X; k++) {
+            write(sockfd, buff, i);
         }
 
-        read(sockfd, recvBuff, sizeof(recvBuff));
+        read(sockfd, recvBuff, 1);
 
         // Received the ack
         clock_gettime(CLOCK_MONOTONIC, &end);
 
         // The amount of seconds passed:
-        double elapsed = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1e9;
+        double elapsed = (end.tv_sec - start.tv_sec) + ((end.tv_nsec - start.tv_nsec) / 1e9);
         double avg = elapsed / X;
         totalTime += avg;
         if (!isWarmup) {
-            printf("%d\t%d\tseconds\n", i, avg);
+            printf("%d\t%.10lf\tseconds\n", i, avg);
         }
         free(buff);
 
-
-        // The throughput is: totalTime/TOTALSIZEOFPACKETS.
     }
 }
 
@@ -77,9 +76,21 @@ int main()
         exit(0);
         }
 
-    printf("#>\tclient\t127.0.0.1");
+    printf("#>\tclient\t127.0.0.1\n");
     // function for chat
     func(sockfd, 1);
+    func(sockfd, 1);
+    func(sockfd, 1);
+    func(sockfd, 1);
+    func(sockfd, 1);
+    func(sockfd, 1);
+    func(sockfd, 1);
+    func(sockfd, 1);
+    func(sockfd, 1);
+    func(sockfd, 1);
+    func(sockfd, 1);
+    func(sockfd, 1);
+
     func(sockfd, 0);
 
     // close the socket

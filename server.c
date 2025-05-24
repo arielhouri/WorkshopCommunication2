@@ -3,12 +3,12 @@
 #include <netinet/in.h> 
 #include <stdlib.h> 
 #include <string.h>
-include <strings.h>
+#include <strings.h>
 #include <sys/socket.h> 
 #include <sys/types.h> 
 #include <unistd.h> // read(), write(), close()
 #define MAX 1048576
-#define X 5
+#define X 100
 #define PORT 8080 
 #define SA struct sockaddr 
   
@@ -20,20 +20,19 @@ void func(int connfd)
     for (int i = 1; i <= MAX; i*=2) {
         int n = 0;
         // read the message from client and copy it in buffer
-        while (n < i * X) {
+        while (n < (i * X)) {
             n += read(connfd, buff, sizeof(buff));
         }
   
         // and send that buffer to client 
-        write(connfd, buff, sizeof(buff));
-        } 
-    } 
-} 
+        write(connfd, "a", 1);
+    }
+}
   
 // Driver function 
 int main() 
 {
-    printf("#>\tserver");
+    printf("#>\tserver\n");
     int sockfd, connfd, len; 
     struct sockaddr_in servaddr, cli; 
   
@@ -70,11 +69,26 @@ int main()
         exit(0); 
     }
   
-    // Function for chatting between client and server 
+    // Function for chatting between client and server
+    //for warmup
     func(connfd);
+    func(connfd);
+    func(connfd);
+    func(connfd);
+    func(connfd);
+    func(connfd);
+    func(connfd);
+    func(connfd);
+    func(connfd);
+    func(connfd);
+    func(connfd);
+    func(connfd);
+
+    // for testing
     func(connfd);
   
     // After chatting close the socket 
     close(sockfd);
     printf("#>");
+    fflush(stdout);
 }
