@@ -1,5 +1,5 @@
-#include <stdio.h> 
-#include <netdb.h> 
+#include <stdio.h>
+#include <netdb.h>
 #include <netinet/in.h> 
 #include <stdlib.h> 
 #include <string.h>
@@ -7,36 +7,26 @@
 #include <sys/socket.h> 
 #include <sys/types.h> 
 #include <unistd.h> // read(), write(), close()
-#define MAX 80 
+#define MAX 1048576
+#define X 5
 #define PORT 8080 
 #define SA struct sockaddr 
   
 // Function designed for chat between client and server. 
 void func(int connfd) 
 { 
-    char buff[MAX]; 
-    int n;
+    char buff[MAX];
     // infinite loop for chat 
-    for (;;) { 
+    for (int i = 1; i <= ONEMB; i*=2) {
         bzero(buff, MAX); // Fill buff with 0's
-  
-        // read the message from client and copy it in buffer 
-        read(connfd, buff, sizeof(buff)); 
-        // print buffer which contains the client contents 
-        printf("From client: %s\t To client : ", buff); 
-        bzero(buff, MAX); 
-        n = 0; 
-        // copy server message in the buffer 
-        while ((buff[n++] = getchar()) != '\n') 
-            ; 
+        int n = 0;
+        // read the message from client and copy it in buffer
+        while (n < i * X) {
+            n += read(connfd, buff, sizeof(buff));
+        }
   
         // and send that buffer to client 
-        write(connfd, buff, sizeof(buff)); 
-  
-        // if msg contains "Exit" then server exit and chat ended. 
-        if (strncmp("exit", buff, 4) == 0) { 
-            printf("Server Exit...\n"); 
-            break; 
+        write(connfd, buff, sizeof(buff));
         } 
     } 
 } 
