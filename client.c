@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
         exit(0);
         }
 
-    printf("#>\tclient\t%s\n", argv[1]);
+
     // function for chat
     for (int j = 0; j < 15; j++) {
         func(sockfd, 1);
@@ -92,5 +92,4 @@ int main(int argc, char *argv[])
 
     // close the socket
     close(sockfd);
-    printf("#>");
 }
