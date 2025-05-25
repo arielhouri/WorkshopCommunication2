@@ -18,7 +18,7 @@
 void func(int sockfd, int isWarmup)
 {
 
-    double totalTime = 0;
+
     char recvBuff[1];
 
     // For each size of block
@@ -42,9 +42,11 @@ void func(int sockfd, int isWarmup)
         // The amount of seconds passed:
         double elapsed = (end.tv_sec - start.tv_sec) + ((end.tv_nsec - start.tv_nsec) / 1e9);
         double avg = elapsed / X;
-        totalTime += avg;
+
+        double mbs = (i * 8) / (avg * 1048576);
+
         if (!isWarmup) {
-            printf("%d\t%.10lf\tseconds\n", i, avg);
+            printf("%d\t%.5lf\tMb/s\n", i, mbs);
         }
         free(buff);
 
