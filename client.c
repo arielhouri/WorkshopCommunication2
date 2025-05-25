@@ -10,8 +10,7 @@
 #include <unistd.h> // read(), write(), close()
 #define ONEMB 1048576
 #define TOTALSIZEOFPACKETS 2097151
-#define X 100
-#define PORT 8080
+#define PORT 8081
 #define SA struct sockaddr
 
 
@@ -23,6 +22,11 @@ void func(int sockfd, int isWarmup)
 
     // For each size of block
     for (int i = 1; i <= ONEMB; i*=2) {
+
+        int X = (10 * 1024 * 1024 / i);
+        if (X < 1000) {
+            X = 1000;
+        }
 
         char *buff = malloc(i);
 
@@ -84,7 +88,7 @@ int main(int argc, char *argv[])
 
 
     // function for chat
-    for (int j = 0; j < 15; j++) {
+    for (int j = 0; j < 20; j++) {
         func(sockfd, 1);
     }
 

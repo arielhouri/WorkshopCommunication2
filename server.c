@@ -9,16 +9,19 @@
 #include <sys/types.h> 
 #include <unistd.h> // read(), write(), close()
 #define MAX 1048576
-#define X 100
-#define PORT 8080 
+#define PORT 8081
 #define SA struct sockaddr 
   
 // Function designed for chat between client and server. 
 void func(int connfd) 
-{ 
+{
     char buff[MAX];
     // infinite loop for chat 
     for (int i = 1; i <= MAX; i*=2) {
+        int X = (10 * 1024 * 1024 / i);
+        if (X < 1000) {
+            X = 1000;
+        }
         int n = 0;
         // read the message from client and copy it in buffer
         while (n < (i * X)) {
@@ -75,7 +78,7 @@ int main()
     // Function for chatting between client and server
     // for warmup, doing 15 iterations of the same process.
     // It is enough to set up the TCP connection.
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 20; i++) {
         func(connfd);
     }
 
