@@ -33,7 +33,6 @@ void func(int connfd)
 // Driver function 
 int main() 
 {
-    printf("#>\tserver\n");
     int sockfd, connfd, len; 
     struct sockaddr_in servaddr, cli; 
   
@@ -93,6 +92,5 @@ int main()
   
     // After chatting close the socket 
     close(sockfd);
-    printf("#>");
     fflush(stdout);
 }
