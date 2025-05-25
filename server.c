@@ -31,7 +31,7 @@ void func(int connfd)
 }
   
 // Driver function 
-int main() 
+int main()
 {
     printf("#>\tserver\n");
     int sockfd, connfd, len; 

@@ -51,7 +51,7 @@ void func(int sockfd, int isWarmup)
     }
 }
 
-int main()
+int main(argc, argv)
 {
     int sockfd, connfd;
     struct sockaddr_in servaddr, cli;
@@ -70,7 +70,7 @@ int main()
 
     // assign IP, PORT
     servaddr.sin_family = AF_INET;
-    servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    servaddr.sin_addr.s_addr = inet_addr(argv[1]);
     servaddr.sin_port = htons(PORT);
 
     // connect the client socket to server socket
@@ -80,20 +80,11 @@ int main()
         exit(0);
         }
 
-    printf("#>\tclient\t127.0.0.1\n");
+    printf("#>\tclient\t%s\n", argv[1]);
     // function for chat
-    func(sockfd, 1);
-    func(sockfd, 1);
-    func(sockfd, 1);
-    func(sockfd, 1);
-    func(sockfd, 1);
-    func(sockfd, 1);
-    func(sockfd, 1);
-    func(sockfd, 1);
-    func(sockfd, 1);
-    func(sockfd, 1);
-    func(sockfd, 1);
-    func(sockfd, 1);
+    for (int j = 0; j < 15; j++) {
+        func(sockfd, 1);
+    }
 
     func(sockfd, 0);
 
