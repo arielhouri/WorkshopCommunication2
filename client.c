@@ -53,7 +53,7 @@ void func(int sockfd, int isWarmup)
     }
 }
 
-int main(argc, argv)
+int main(int argc, char *argv[])
 {
     int sockfd, connfd;
     struct sockaddr_in servaddr, cli;
