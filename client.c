@@ -23,11 +23,10 @@ void func(int sockfd, int isWarmup)
     // For each size of block
     for (int i = 1; i <= ONEMB; i*=2) {
 
-        int X = (10 * 1024 * 1024 / i);
-        if (X < 1000) {
-            X = 1000;
+        int X = (1024 * 1024 / i);
+        if (X < 100) {
+            X = 100;
         }
-
         char *buff = malloc(i);
 
         struct timespec start, end;
@@ -39,15 +38,15 @@ void func(int sockfd, int isWarmup)
         }
 
         read(sockfd, recvBuff, 1);
-
         // Received the ack
+
         clock_gettime(CLOCK_MONOTONIC, &end);
 
         // The amount of seconds passed:
         double elapsed = (end.tv_sec - start.tv_sec) + ((end.tv_nsec - start.tv_nsec) / 1e9);
         double avg = elapsed / X;
 
-        double mbs = (i * 8) / (avg * 1048576);
+        double mbs = (i * 8) / (avg * ONEMB);
 
         if (!isWarmup) {
             printf("%d\t%.5lf\tMb/s\n", i, mbs);
@@ -88,7 +87,7 @@ int main(int argc, char *argv[])
 
 
     // function for chat
-    for (int j = 0; j < 20; j++) {
+    for (int j = 0; j < 10; j++) {
         func(sockfd, 1);
     }
 

@@ -18,9 +18,9 @@ void func(int connfd)
     char buff[MAX];
     // infinite loop for chat 
     for (int i = 1; i <= MAX; i*=2) {
-        int X = (10 * 1024 * 1024 / i);
-        if (X < 1000) {
-            X = 1000;
+        int X = (1024 * 1024 / i);
+        if (X < 100) {
+            X = 100;
         }
         int n = 0;
         // read the message from client and copy it in buffer
@@ -29,7 +29,7 @@ void func(int connfd)
         }
   
         // and send that buffer to client 
-        write(connfd, "a", 1);
+        write(connfd, "b", 1);
     }
 }
   
@@ -78,10 +78,9 @@ int main()
     // Function for chatting between client and server
     // for warmup, doing 15 iterations of the same process.
     // It is enough to set up the TCP connection.
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < 10; i++) {
         func(connfd);
     }
-
     // for testing
     func(connfd);
   
