@@ -87,6 +87,8 @@ int main(int argc, char *argv[])
 
 
     // function for chat
+    // We decided to do 10 iterations of warmup, each consisting of the whole process
+    // because we tested a few options and we have seen that it is enough so that the values stabilize.
     for (int j = 0; j < 10; j++) {
         func(sockfd, 1);
     }

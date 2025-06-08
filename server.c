@@ -76,8 +76,8 @@ int main()
     setsockopt(connfd, IPPROTO_TCP, TCP_NODELAY, (char *)&flag, sizeof(int));
 
     // Function for chatting between client and server
-    // for warmup, doing 15 iterations of the same process.
-    // It is enough to set up the TCP connection.
+    // We decided to do 10 iterations of warmup, each consisting of the whole process
+    // because we tested a few options and we have seen that it is enough so that the values stabilize.
     for (int i = 0; i < 10; i++) {
         func(connfd);
     }
