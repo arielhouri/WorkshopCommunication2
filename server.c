@@ -13,24 +13,22 @@
 #define SA struct sockaddr 
   
 // Function designed for chat between client and server. 
-void func(int connfd) 
+void func(int connfd, int i)
 {
     char buff[MAX];
-    // infinite loop for chat 
-    for (int i = 1; i <= MAX; i*=2) {
-        int X = (1024 * 1024 / i);
-        if (X < 100) {
-            X = 100;
-        }
-        int n = 0;
-        // read the message from client and copy it in buffer
-        while (n < (i * X)) {
-            n += read(connfd, buff, sizeof(buff));
-        }
-  
-        // and send that buffer to client 
-        write(connfd, "b", 1);
+    // infinite loop for chat
+    int X = (1024 * 1024 / i);
+    if (X < 100) {
+        X = 100;
     }
+    int n = 0;
+    // read the message from client and copy it in buffer
+    while (n < (i * X)) {
+        n += read(connfd, buff, sizeof(buff));
+    }
+  
+    // and send that buffer to client
+    write(connfd, "b", 1);
 }
   
 // Driver function 
@@ -78,11 +76,12 @@ int main()
     // Function for chatting between client and server
     // We decided to do 10 iterations of warmup, each consisting of the whole process
     // because we tested a few options and we have seen that it is enough so that the values stabilize.
-    for (int i = 0; i < 10; i++) {
-        func(connfd);
+    for (int i = 1; i <= MAX; i*=2) {
+        for (int j = 0; j < 10; j++) {
+            func(connfd, i);
+        }
+        func(connfd, i);
     }
-    // for testing
-    func(connfd);
   
     // After chatting close the socket 
     close(sockfd);

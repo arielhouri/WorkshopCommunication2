@@ -14,7 +14,7 @@
 #define SA struct sockaddr
 
 
-void func(int sockfd, int isWarmup, i)
+void func(int sockfd, int isWarmup, int i)
 {
 
 
@@ -92,6 +92,7 @@ int main(int argc, char *argv[])
         }
         func(sockfd, 0, i);
     }
+
 
     // close the socket
     close(sockfd);
