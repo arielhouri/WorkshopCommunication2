@@ -14,46 +14,42 @@
 #define SA struct sockaddr
 
 
-void func(int sockfd, int isWarmup)
+void func(int sockfd, int isWarmup, int i)
 {
 
 
     char recvBuff[1];
 
-    // For each size of block
-    for (int i = 1; i <= ONEMB; i*=2) {
-
-        int X = (1024 * 1024 / i);
-        if (X < 100) {
-            X = 100;
-        }
-        char *buff = malloc(i);
-
-        struct timespec start, end;
-        bzero(buff, i);
-
-        clock_gettime(CLOCK_MONOTONIC, &start);
-        for (int k = 0; k < X; k++) {
-            write(sockfd, buff, i);
-        }
-
-        read(sockfd, recvBuff, 1);
-        // Received the ack
-
-        clock_gettime(CLOCK_MONOTONIC, &end);
-
-        // The amount of seconds passed:
-        double elapsed = (end.tv_sec - start.tv_sec) + ((end.tv_nsec - start.tv_nsec) / 1e9);
-        double avg = elapsed / X;
-
-        double mbs = (i * 8) / (avg * ONEMB);
-
-        if (!isWarmup) {
-            printf("%d\t%.5lf\tMb/s\n", i, mbs);
-        }
-        free(buff);
-
+    int X = (1024 * 1024 / i);
+    if (X < 100) {
+        X = 100;
     }
+    char *buff = malloc(i);
+
+    struct timespec start, end;
+    bzero(buff, i);
+
+    clock_gettime(CLOCK_MONOTONIC, &start);
+    for (int k = 0; k < X; k++) {
+        write(sockfd, buff, i);
+    }
+
+    read(sockfd, recvBuff, 1);
+    // Received the ack
+
+    clock_gettime(CLOCK_MONOTONIC, &end);
+
+    // The amount of seconds passed:
+    double elapsed = (end.tv_sec - start.tv_sec) + ((end.tv_nsec - start.tv_nsec) / 1e9);
+    double avg = elapsed / X;
+
+    double mbs = (i * 8) / (avg * ONEMB);
+
+    if (!isWarmup) {
+        printf("%d\t%.5lf\tMb/s\n", i, mbs);
+    }
+    free(buff);
+
 }
 
 int main(int argc, char *argv[])
@@ -89,11 +85,14 @@ int main(int argc, char *argv[])
     // function for chat
     // We decided to do 10 iterations of warmup, each consisting of the whole process
     // because we tested a few options and we have seen that it is enough so that the values stabilize.
-    for (int j = 0; j < 10; j++) {
-        func(sockfd, 1);
+    // For each size of block
+    for (int i = 1; i <= ONEMB; i*=2) {
+        for (int j = 0; j < 10; j++) {
+            func(sockfd, 1, i);
+        }
+        func(sockfd, 0, i);
     }
 
-    func(sockfd, 0);
 
     // close the socket
     close(sockfd);
